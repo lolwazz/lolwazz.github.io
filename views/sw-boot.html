@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading...</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .loader { text-align: center; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 2px solid rgba(255,255,255,0.12);
+      border-top-color: rgba(255,255,255,0.75);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    p { font-size: 13px; color: rgba(255,255,255,0.5); }
+    .err { color: #f87171; margin-top: 10px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <div class="spinner"></div>
+    <p>Setting up proxy...</p>
+    <p class="err" id="err">Service workers are not supported in this browser.</p>
+  </div>
+
+  <script src="/uv.bundle.js"></script>
+  <script src="/uv.config.js"></script>
+  <script>
+    (function() {
+      var dest = window.location.href;
+
+      if (!('serviceWorker' in navigator)) {
+        document.getElementById('err').style.display = 'block';
+        return;
+      }
+
+      navigator.serviceWorker.register('/sw.js', { scope: __uv$config.prefix })
+        .then(function(reg) {
+          function activate(sw) {
+            sw.addEventListener('statechange', function() {
+              if (sw.state === 'activated') window.location.reload();
+            });
+          }
+
+          if (reg.active) {
+            window.location.reload();
+          } else if (reg.waiting) {
+            activate(reg.waiting);
+          } else if (reg.installing) {
+            activate(reg.installing);
+          } else {
+            reg.addEventListener('updatefound', function() {
+              activate(reg.installing);
+            });
+          }
+        })
+        .catch(function(err) {
+          document.getElementById('err').textContent = 'Failed to set up proxy: ' + err.message;
+          document.getElementById('err').style.display = 'block';
+        });
+    })();
+  </script>
+</body>
+</html>

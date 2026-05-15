@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>RADICAL PROXY</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap">
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@1.39.2/tsparticles.min.js" integrity="sha256-FCz5ToEA27payrGYaVGRidiIA+68Z31TBXFzcIT1/gU=" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    #particles-js {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 0;
+    }
+
+    .browser-bar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      background: rgba(20, 20, 20, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-btns {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      background: rgba(255,255,255,0.07);
+      border: none;
+      color: rgba(255,255,255,0.6);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
+    .url-bar {
+      flex: 1;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      padding: 6px 16px;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .url-bar::placeholder { color: rgba(255,255,255,0.35); }
+    .url-bar:focus {
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .home-btn {
+      background: rgba(255,255,255,0.07);
+      border: none;
+      color: rgba(255,255,255,0.6);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .home-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
+    .main-content {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 49px);
+      padding: 0 20px;
+      gap: 0;
+    }
+
+    .site-title {
+      font-family: 'Bebas Neue', 'Impact', sans-serif;
+      font-size: clamp(52px, 9vw, 100px);
+      font-weight: 400;
+      letter-spacing: 4px;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 32px;
+      text-align: center;
+      user-select: none;
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 16px;
+    }
+
+    #main-search {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 14px 20px;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    #main-search::placeholder { color: rgba(255,255,255,0.35); }
+    #main-search:focus {
+      border-color: rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.09);
+    }
+
+    .engines {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 36px;
+    }
+
+    .engine-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      color: rgba(255,255,255,0.75);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .engine-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border-color: rgba(255,255,255,0.2);
+    }
+    .engine-btn.active {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border-color: rgba(255,255,255,0.25);
+    }
+    .engine-letter {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    #proxy-frame {
+      display: none;
+      position: fixed;
+      top: 49px;
+      left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: calc(100vh - 49px);
+      border: none;
+      z-index: 15;
+      background: #000;
+    }
+    body.browsing .main-content,
+    body.browsing #particles-js { display: none; }
+    body.browsing #proxy-frame { display: block; }
+  </style>
+</head>
+<body>
+
+  <div id="particles-js"></div>
+  <iframe id="proxy-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock allow-top-navigation-by-user-activation"></iframe>
+
+  <div class="browser-bar">
+    <div class="nav-btns">
+      <button class="nav-btn" id="bar-back" title="Back">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M7 1L3 5l4 4"/></svg>
+      </button>
+      <button class="nav-btn" id="bar-fwd" title="Forward">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4"/></svg>
+      </button>
+      <button class="nav-btn" id="bar-reload" title="Reload">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10.5 2A5 5 0 1 0 11 6"/><path d="M9 0l1.5 2-2 1.2"/></svg>
+      </button>
+    </div>
+    <input type="text" class="url-bar" id="url-bar" placeholder="Search or enter URL...">
+    <button class="home-btn" id="bar-home" title="Home">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="currentColor"><path d="M6.5 1L1 6h2v6h3V8h1v4h3V6h2L6.5 1z"/></svg>
+    </button>
+  </div>
+
+  <div class="main-content">
+    <h1 class="site-title">RADICAL PROXY</h1>
+
+    <div class="search-container">
+      <input type="text" id="main-search" placeholder="Break from the chains of surveillance...">
+    </div>
+
+    <div class="engines">
+      <button class="engine-btn active" data-engine="duckduckgo" data-url="https://duckduckgo.com/?q=">
+        <span class="engine-letter" style="background:#de5833;color:#fff;">D</span>DuckDuckGo
+      </button>
+      <button class="engine-btn" data-engine="google" data-url="https://www.google.com/search?q=">
+        <span class="engine-letter" style="background:#4285f4;color:#fff;">G</span>Google
+      </button>
+      <button class="engine-btn" data-engine="bing" data-url="https://www.bing.com/search?q=">
+        <span class="engine-letter" style="background:#008373;color:#fff;">B</span>Bing
+      </button>
+      <button class="engine-btn" data-engine="brave" data-url="https://search.brave.com/search?q=">
+        <span class="engine-letter" style="background:#fb542b;color:#fff;">B</span>Brave
+      </button>
+      <button class="engine-btn" data-engine="yahoo" data-url="https://search.yahoo.com/search?p=">
+        <span class="engine-letter" style="background:#720e9e;color:#fff;">Y</span>Yahoo
+      </button>
+    </div>
+
+  </div>
+
+  <script src="uv.bundle.js"></script>
+  <script src="uv.config.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js', { scope: __uv$config.prefix });
+    }
+  </script>
+  <script src="assets/js/common.js"></script>
+  <script>
+    var currentEngineUrl = 'https://duckduckgo.com/?q=';
+    var frame = document.getElementById('proxy-frame');
+    var urlBar = document.getElementById('url-bar');
+
+    document.querySelectorAll('.engine-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.engine-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentEngineUrl = btn.dataset.url;
+      });
+    });
+
+    function buildProxyUrl(target) {
+      setAuthCookie("__cor_auth=1", true);
+      return '/service/' + xor.encode(omnibox(target));
+    }
+
+    function decodeProxyUrl(url) {
+      try {
+        if (url && url.startsWith('/service/')) {
+          return xor.decode(url.slice('/service/'.length));
+        }
+      } catch(e) {}
+      return url;
+    }
+
+    function loadInFrame(proxyUrl) {
+      frame.src = proxyUrl;
+      document.body.classList.add('browsing');
+      urlBar.value = decodeProxyUrl(proxyUrl);
+    }
+
+    function doSearch(query) {
+      if (!query.trim()) return;
+      var url;
+      if (query.match(/^https?:\/\//)) {
+        url = query;
+      } else if (query.includes('.') && !query.includes(' ')) {
+        url = 'https://' + query;
+      } else {
+        url = currentEngineUrl + encodeURIComponent(query);
+      }
+      loadInFrame(buildProxyUrl(url));
+    }
+
+    frame.addEventListener('load', function() {
+      try {
+        var loc = frame.contentWindow.location.href;
+        if (loc && loc !== 'about:blank') {
+          var path = frame.contentWindow.location.pathname + frame.contentWindow.location.search;
+          urlBar.value = decodeProxyUrl(path) || decodeProxyUrl(loc);
+        }
+      } catch(e) {}
+    });
+
+    document.getElementById('main-search').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doSearch(this.value);
+    });
+
+    urlBar.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doSearch(this.value);
+    });
+
+    document.getElementById('bar-home').addEventListener('click', function() {
+      frame.src = 'about:blank';
+      document.body.classList.remove('browsing');
+      urlBar.value = '';
+    });
+    document.getElementById('bar-back').addEventListener('click', function() {
+      if (document.body.classList.contains('browsing')) {
+        try { frame.contentWindow.history.back(); } catch(e) {}
+      } else { history.back(); }
+    });
+    document.getElementById('bar-fwd').addEventListener('click', function() {
+      if (document.body.classList.contains('browsing')) {
+        try { frame.contentWindow.history.forward(); } catch(e) {}
+      } else { history.forward(); }
+    });
+    document.getElementById('bar-reload').addEventListener('click', function() {
+      if (document.body.classList.contains('browsing')) {
+        try { frame.contentWindow.location.reload(); } catch(e) { frame.src = frame.src; }
+      } else { location.reload(); }
+    });
+
+    tsParticles.load("particles-js", {
+      background: { color: { value: "#000000" } },
+      fpsLimit: 60,
+      particles: {
+        color: { value: "#ffffff" },
+        links: {
+          color: "#ffffff",
+          distance: 150,
+          enable: true,
+          opacity: 0.15,
+          width: 1
+        },
+        collisions: { enable: false },
+        move: {
+          direction: "none",
+          enable: true,
+          outMode: "bounce",
+          random: true,
+          speed: 0.4,
+          straight: false
+        },
+        number: { density: { enable: true, area: 900 }, value: 80 },
+        opacity: { value: 0.5 },
+        shape: { type: "circle" },
+        size: { random: true, value: 2 }
+      },
+      detectRetina: true
+    });
+  </script>
+
+</body>
+</html>
